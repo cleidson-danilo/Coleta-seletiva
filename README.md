@@ -5,7 +5,7 @@ Projeto acadêmico desenvolvido para a disciplina de Análise e Desenvolvimento 
 ## 👥 Integrantes e Responsabilidades
 * **Danilo**: Desenvolvimento Back-end (Node.js/MySQL).
 * **Daniel**: Designer de Interface e Desenvolvimento Front-end (Tailwind CSS).
-* **Enzo**: Analista de Dados e Pesquisa (Dados.gov.br).
+* **Enzo**: Analista de Dados e Pesquisa (Dados.gov.br) e Desenvolvimento Front-end.
 
 ## 🚀 Funcionalidades do Sistema
 O projeto utiliza um sistema de níveis de acesso para garantir a melhor experiência a cada usuário:
