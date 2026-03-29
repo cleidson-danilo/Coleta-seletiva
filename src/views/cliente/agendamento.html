@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <link rel="icon" type="image/png" href="favicon.ico.png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EcoPonto Digital - Solicitar Coleta</title>
@@ -16,7 +15,7 @@
         <div class="site-nav__inner">
             <a href="/" class="site-nav__brand">
                 <i class="fas fa-recycle"></i>
-                <span>EcoPonto <strong>Digital</strong></span>
+                <span data-subtitle="Solicitação de Coleta">EcoPonto <strong>Digital</strong></span>
             </a>
             <a href="/login" class="site-nav__back">
                 <i class="fas fa-arrow-left"></i> Voltar
@@ -143,8 +142,10 @@
     </footer>
 
     <script>
+        // Estado local do tipo de residuo escolhido no passo 2.
         let tipoSelecionado = '';
 
+        // Controla a navegação entre passos com validação mínima por etapa.
         function irStep(n) {
             // Validações por step
             if (n === 2) {
@@ -172,12 +173,14 @@
             });
         }
 
+        // Destaca visualmente o tipo selecionado e salva para envio.
         function selecionarTipo(btn, tipo) {
             document.querySelectorAll('.tipo-btn').forEach(b => b.classList.remove('selecionado'));
             btn.classList.add('selecionado');
             tipoSelecionado = tipo;
         }
 
+        // Gera um resumo final antes de confirmar o agendamento.
         function mostrarResumo() {
             const data = new Date(document.getElementById('data_coleta').value + 'T00:00:00');
             const dataFormatada = data.toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' });
@@ -190,6 +193,7 @@
             `;
         }
 
+        // Envia os dados para a API e atualiza a interface conforme o retorno.
         async function enviar() {
             const btn = document.getElementById('btn-enviar');
             btn.disabled = true;
@@ -210,7 +214,14 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(dados)
                 });
-                const json = await resp.json();
+
+                // Tenta ler JSON sem quebrar caso o backend devolva corpo vazio/invalido.
+                let json = null;
+                try {
+                    json = await resp.json();
+                } catch {
+                    json = null;
+                }
 
                 if (resp.ok) {
                     document.getElementById('msg-sucesso').textContent = '✅ Agendamento realizado! A cooperativa entrará em contato em breve.';
@@ -218,7 +229,7 @@
                     document.getElementById('msg-erro').classList.add('hidden');
                     btn.classList.add('hidden');
                 } else {
-                    throw new Error(json.erro || 'Erro ao enviar.');
+                    throw new Error((json && json.erro) ? json.erro : `Erro ao enviar (status ${resp.status}).`);
                 }
             } catch (e) {
                 document.getElementById('msg-erro').textContent = '❌ ' + e.message;
@@ -228,7 +239,7 @@
             }
         }
 
-        // Data mínima = amanhã
+        // Regra de negocio: coleta so pode ser agendada a partir de amanha.
         const amanha = new Date();
         amanha.setDate(amanha.getDate() + 1);
         document.getElementById('data_coleta').min = amanha.toISOString().split('T')[0];

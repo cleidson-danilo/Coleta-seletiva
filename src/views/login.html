@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <link rel="icon" type="image/png" href="/favicon.ico.png">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EcoPonto Digital - Acesso</title>
@@ -12,13 +12,15 @@
 </head>
 <body class="login-page">
 
+    <!-- Elemento decorativo de fundo para profundidade visual -->
     <div class="login-bg-decoration"></div>
 
+    <!-- Navegação simplificada com identidade e retorno ao início -->
     <nav class="login-nav">
         <div class="container mx-auto px-6 flex justify-between items-center">
             <a href="/" class="login-brand">
                 <i class="fas fa-recycle"></i>
-                <span>EcoPonto <strong>Digital</strong></span>
+                <span data-subtitle="Portal de Acesso">EcoPonto <strong>Digital</strong></span>
             </a>
             <a href="/" class="login-back-btn">
                 <i class="fas fa-arrow-left"></i>
@@ -27,8 +29,10 @@
         </div>
     </nav>
 
+    <!-- Conteúdo central da decisão de perfil -->
     <main class="login-main">
 
+        <!-- Título da etapa de acesso -->
         <div class="login-hero">
             <div class="login-hero-icon">
                 <i class="fas fa-recycle"></i>
@@ -37,12 +41,14 @@
             <p class="login-hero-subtitle">Escolha seu perfil para continuar no EcoPonto Digital</p>
         </div>
 
+        <!-- Cards de entrada por perfil (cliente/cooperativa) -->
         <div class="login-cards">
 
+            <!-- Fluxo do cidadão: consulta pontos, guia e solicita coleta -->
             <div class="login-card login-card--cliente">
                 <span class="login-card__badge">Cidadão</span>
                 <div class="login-card__icon-wrap login-card__icon-wrap--cliente">
-                    <i class="fas fa-user-house"></i>
+                    <i class="fas fa-house-user"></i>
                 </div>
                 <h2 class="login-card__title">Sou Cliente</h2>
                 <p class="login-card__desc">Encontre pontos de coleta próximos ou agende uma retirada de recicláveis na sua residência ou empresa.</p>
@@ -57,6 +63,7 @@
                 </a>
             </div>
 
+            <!-- Fluxo operacional da cooperativa: gestão dos agendamentos -->
             <div class="login-card login-card--colaborador">
                 <span class="login-card__badge login-card__badge--colaborador">Cooperativa</span>
                 <div class="login-card__icon-wrap login-card__icon-wrap--colaborador">
@@ -79,6 +86,7 @@
 
     </main>
 
+    <!-- Rodapé institucional -->
     <footer class="login-footer">
         &copy; 2026 EcoPonto Digital &mdash; Projeto ODS 11 &amp; 12
     </footer>

@@ -18,7 +18,7 @@
         <div class="site-nav__inner">
             <a href="/" class="site-nav__brand">
                 <i class="fas fa-recycle"></i>
-                <span>EcoPonto <strong>Digital</strong></span>
+                <span data-subtitle="Pontos de Coleta">EcoPonto <strong>Digital</strong></span>
             </a>
             <div class="site-nav__links">
                 <a href="/guia" class="site-nav__link">Guia</a>
@@ -35,10 +35,10 @@
             <p class="text-slate-500 mt-1">Dados reais dos ecopontos da cidade do Recife.</p>
         </div>
 
-        <div class="flex flex-col lg:flex-row gap-4 flex-grow" style="min-height: 500px;">
+        <div class="flex flex-col lg:flex-row gap-4 flex-grow pontos-layout">
 
             <!-- Lista lateral -->
-            <div class="lg:w-80 bg-white rounded-2xl shadow-md overflow-hidden flex flex-col">
+            <div class="lg:w-80 bg-white rounded-2xl shadow-md overflow-hidden flex flex-col min-h-0 pontos-lista">
                 <div class="p-4 bg-emerald-600 text-white">
                     <div class="flex items-center gap-2">
                         <i class="fas fa-filter"></i>
@@ -53,7 +53,7 @@
                         <button onclick="filtrar('eletronico')" class="filtro-btn text-xs px-3 py-1 rounded-full bg-emerald-500 text-white">Eletrônico</button>
                     </div>
                 </div>
-                <div id="lista-pontos" class="overflow-y-auto flex-grow p-3 space-y-2">
+                <div id="lista-pontos" class="overflow-y-auto flex-grow p-3 space-y-2 min-h-0">
                     <!-- Preenchido via JS -->
                 </div>
                 <div class="p-3 border-t text-xs text-slate-400 text-center">
@@ -62,7 +62,7 @@
             </div>
 
             <!-- Mapa -->
-            <div class="flex-grow bg-white rounded-2xl shadow-md overflow-hidden" style="min-height: 400px;">
+            <div class="flex-grow bg-white rounded-2xl shadow-md overflow-hidden min-h-0 pontos-mapa-wrap">
                 <div id="map" class="rounded-2xl"></div>
             </div>
         </div>
@@ -93,18 +93,28 @@
             eletronico: { bg: '#ede9fe', text: '#5b21b6', label: 'Eletrônico' },
         };
 
+        // Estado da tela: instancia do mapa, marcadores renderizados e filtro atual.
         let mapaLeaflet;
         let marcadores = [];
         let filtroAtivo = 'todos';
 
+        // Recalcula o tamanho do mapa quando o layout muda (resize/filtro).
+        function atualizarTamanhoMapa() {
+            if (!mapaLeaflet) return;
+            requestAnimationFrame(() => mapaLeaflet.invalidateSize());
+        }
+
+        // Inicializa o mapa e depois desenha os pontos.
         function iniciarMapa() {
             mapaLeaflet = L.map('map').setView([-8.0631, -34.9150], 12);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '© OpenStreetMap contributors'
             }).addTo(mapaLeaflet);
             renderizar();
+            atualizarTamanhoMapa();
         }
 
+        // Renderiza lista e marcadores com base no filtro selecionado.
         function renderizar() {
             // Limpar marcadores
             marcadores.forEach(m => mapaLeaflet.removeLayer(m));
@@ -156,8 +166,10 @@
             });
 
             document.getElementById('contador').textContent = `${filtrados.length} ponto(s) encontrado(s)`;
+            atualizarTamanhoMapa();
         }
 
+        // Atualiza filtro visual e reaplica renderizacao dos pontos.
         function filtrar(tipo) {
             filtroAtivo = tipo;
             document.querySelectorAll('.filtro-btn').forEach(btn => {
@@ -169,7 +181,11 @@
             renderizar();
         }
 
-        window.onload = iniciarMapa;
+        // Bootstrap da pagina: inicia mapa e registra ajuste responsivo.
+        window.onload = () => {
+            iniciarMapa();
+            window.addEventListener('resize', atualizarTamanhoMapa);
+        };
     </script>
 </body>
 </html>

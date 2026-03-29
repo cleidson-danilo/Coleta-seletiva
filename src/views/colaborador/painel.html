@@ -96,9 +96,11 @@
     </footer>
 
     <script>
+        // Estado central da tela para evitar novas buscas a cada filtro/busca.
         let todosAgendamentos = [];
         let filtroAtivo = 'todos';
 
+        // Busca agendamentos na API e dispara a atualizacao da interface.
         async function carregarAgendamentos() {
             document.getElementById('loading').classList.remove('hidden');
             document.getElementById('lista-agendamentos').classList.add('hidden');
@@ -118,6 +120,7 @@
             }
         }
 
+        // Atualiza os indicadores superiores com base no estado atual da lista.
         function atualizarContadores() {
             document.getElementById('total-count').textContent = todosAgendamentos.length;
             document.getElementById('pendente-count').textContent = todosAgendamentos.filter(a => a.status === 'pendente').length;
@@ -126,6 +129,27 @@
             document.getElementById('cancelado-count').textContent = todosAgendamentos.filter(a => a.status === 'cancelado').length;
         }
 
+        // Normaliza data recebida do banco para exibicao amigavel no card.
+        function formatarDataColeta(valorData) {
+            if (!valorData) return 'Data nao informada';
+
+            let data;
+            if (typeof valorData === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(valorData)) {
+                data = new Date(valorData + 'T00:00:00');
+            } else {
+                data = new Date(valorData);
+            }
+
+            if (Number.isNaN(data.getTime())) return 'Data invalida';
+
+            return data.toLocaleDateString('pt-BR', {
+                weekday: 'short',
+                day: '2-digit',
+                month: 'short'
+            });
+        }
+
+        // Aplica filtro + busca textual e desenha os cards visiveis.
         function renderizar() {
             const busca = document.getElementById('busca').value.toLowerCase();
 
@@ -149,7 +173,7 @@
             container.classList.remove('hidden');
 
             lista.forEach(ag => {
-                const dataFormatada = new Date(ag.data_coleta + 'T00:00:00').toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: 'short' });
+                const dataFormatada = formatarDataColeta(ag.data_coleta);
 
                 const statusMap = {
                     pendente: { label: 'Pendente', icon: 'fa-clock', cls: 'status-pendente' },
@@ -202,11 +226,13 @@
             });
         }
 
+        // Confirmacao de cancelamento para evitar mudanca acidental de status.
         async function cancelarAgendamento(id) {
             if (!confirm('Tem certeza que deseja cancelar esta coleta?')) return;
             await atualizarStatus(id, 'cancelado');
         }
 
+        // Atualiza status no backend e reflete no estado local sem recarregar tudo.
         async function atualizarStatus(id, novoStatus) {
             try {
                 const resp = await fetch(`/api/agendamento/${id}/status`, {
@@ -225,6 +251,7 @@
             }
         }
 
+        // Troca filtro ativo e redesenha lista mantendo a busca atual.
         function filtrar(tipo) {
             filtroAtivo = tipo;
             document.querySelectorAll('.filtro-btn').forEach(b => {

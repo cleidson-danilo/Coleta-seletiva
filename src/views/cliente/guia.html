@@ -16,7 +16,7 @@
         <div class="site-nav__inner">
             <a href="/" class="site-nav__brand">
                 <i class="fas fa-recycle"></i>
-                <span>EcoPonto <strong>Digital</strong></span>
+                <span data-subtitle="Guia de Descarte">EcoPonto <strong>Digital</strong></span>
             </a>
             <div class="site-nav__links">
                 <a href="/pontos" class="site-nav__link">Pontos de Coleta</a>
@@ -242,6 +242,7 @@
     </footer>
 
     <script>
+        // Alterna a aba ativa e sincroniza o destaque visual dos botoes.
         function abrirTab(id) {
             document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('ativo'));
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('ativo'));
